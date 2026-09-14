@@ -1,8 +1,8 @@
-export default function Page() {
+export default function Gallery() {
   return (
     <main>
       <section>
-        <h1>Art Gallery</h1>
+        <h1>the Gallery</h1>
       </section>
     </main>
   )
