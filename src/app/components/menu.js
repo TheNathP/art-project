@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Nav from "./nav";
+import Navlinks from "./Navlinks";
 
 export default function Menu() {
   const [open, setOpen] = useState(false);
@@ -33,7 +33,7 @@ export default function Menu() {
         `}
       >
         <div className={`
-            flex w-full justify-center px-4 py-2
+            flex w-full justify-between px-8 py-2 gap-2
             transition-opacity duration-1000
             ${
               open
@@ -41,7 +41,7 @@ export default function Menu() {
                 : "pointer-events-none opacity-0"
             }
           `}>
-
+            <Navlinks/>
           </div>
       </nav>
     </div>
