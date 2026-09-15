@@ -11,10 +11,10 @@ export default function Page() {
         autoAnimation={false}
       >
         <section>
-          <div className="">
-
+          <div className="w-[95svw] h-[92svh] border-2 border-black rounded-xs absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="w-full h-screen flex items-center px-24">
+            <h1 className="text-9xl font-bold uppercase">The art <br/> project</h1>
           </div>
-          <h1>Art Gallery</h1>
         </section>
       </LiquidBackground>
     </main>

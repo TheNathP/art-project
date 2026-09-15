@@ -1,0 +1,112 @@
+"use client";
+
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import GalleryFilters from "./GalleryFilters";
+import GalleryGrid from "./GalleryGrid";
+
+export default function GalleryCollection({ artworks }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const years = [
+    ...new Set(
+      artworks
+        .map((artwork) => artwork.year)
+        .filter((year) => year !== null && year !== undefined),
+    ),
+  ].sort((a, b) => b - a);
+
+  const movements = [
+    ...new Set(
+      artworks
+        .map((artwork) => artwork.movement)
+        .filter(Boolean),
+    ),
+  ].sort((a, b) => a.localeCompare(b, "fr"));
+
+  const yearParam = searchParams.get("year");
+  const movementParam = searchParams.get("movement");
+
+  const selectedYear = years.some(
+    (year) => String(year) === yearParam,
+  )
+    ? yearParam
+    : "all";
+
+  const selectedMovement = movements.includes(movementParam)
+    ? movementParam
+    : "all";
+
+  const filteredArtworks = artworks.filter((artwork) => {
+    const matchesYear =
+      selectedYear === "all" ||
+      String(artwork.year) === selectedYear;
+
+    const matchesMovement =
+      selectedMovement === "all" ||
+      artwork.movement === selectedMovement;
+
+    return matchesYear && matchesMovement;
+  });
+
+  function replaceSearchParams(params) {
+    const query = params.toString();
+    const url = query ? `${pathname}?${query}` : pathname;
+
+    router.replace(url, {
+      scroll: false,
+    });
+  }
+
+  function updateFilter(name, value) {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (value === "all") {
+      params.delete(name);
+    } else {
+      params.set(name, value);
+    }
+
+    replaceSearchParams(params);
+  }
+
+  function resetFilters() {
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.delete("year");
+    params.delete("movement");
+
+    replaceSearchParams(params);
+  }
+
+  return (
+    <>
+      <GalleryFilters
+        years={years}
+        movements={movements}
+        selectedYear={selectedYear}
+        selectedMovement={selectedMovement}
+        onYearChange={(value) => updateFilter("year", value)}
+        onMovementChange={(value) =>
+          updateFilter("movement", value)
+        }
+        onReset={resetFilters}
+      />
+
+      <p
+        className="mb-6 text-sm text-neutral-500"
+        aria-live="polite"
+      >
+        {filteredArtworks.length} œuvre
+        {filteredArtworks.length !== 1 ? "s" : ""} affichée
+        {filteredArtworks.length !== 1 ? "s" : ""}
+      </p>
+
+      <GalleryGrid
+        artworks={filteredArtworks}
+        onReset={resetFilters}
+      />
+    </>
+  );
+}
