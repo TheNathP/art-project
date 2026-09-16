@@ -1,4 +1,4 @@
-import LiquidBackground from "./components/LiquidBackground"
+import LiquidBackground from "../components/LiquidBackground"
 
 export default function Page() {
   return (

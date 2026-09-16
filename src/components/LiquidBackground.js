@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { FluidSimulation } from "../lib/fluid-simulation";
+import { FluidSimulation } from "../app/lib/fluid-simulation";
 
 export default function LiquidBackground({
   children,

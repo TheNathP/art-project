@@ -7,7 +7,7 @@ export default function Menu() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="w-100 overflow-hidden rounded-xs border-2 border-black">
+    <div className="w-100 overflow-hidden rounded-xs border-2 border-black backdrop-blur-lg">
       <div className="flex w-full items-center justify-between px-2 py-1">
         <p>LOGO</p>
         <p>Mon super menu</p>

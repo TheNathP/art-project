@@ -4,6 +4,15 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import GalleryFilters from "./GalleryFilters";
 import GalleryGrid from "./GalleryGrid";
 
+
+function normalizeSearchValue(value) {
+  return String(value ?? "")
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLocaleLowerCase("fr")
+    .trim();
+}
+
 export default function GalleryCollection({ artworks }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -27,6 +36,9 @@ export default function GalleryCollection({ artworks }) {
 
   const yearParam = searchParams.get("year");
   const movementParam = searchParams.get("movement");
+  const searchQuery = searchParams.get("search")?.trim() ?? "";
+
+  const normalizedSearchQuery = normalizeSearchValue(searchQuery);
 
   const selectedYear = years.some(
     (year) => String(year) === yearParam,
@@ -47,7 +59,13 @@ export default function GalleryCollection({ artworks }) {
       selectedMovement === "all" ||
       artwork.movement === selectedMovement;
 
-    return matchesYear && matchesMovement;
+    const matchesSearch =
+      normalizedSearchQuery === "" ||
+      [artwork.title, artwork.artist].some((value) =>
+        normalizeSearchValue(value).includes(normalizedSearchQuery),
+      );
+
+    return matchesYear && matchesMovement && matchesSearch;
   });
 
   function replaceSearchParams(params) {
@@ -76,37 +94,30 @@ export default function GalleryCollection({ artworks }) {
 
     params.delete("year");
     params.delete("movement");
+    params.delete("search");
 
     replaceSearchParams(params);
   }
 
   return (
     <>
-      <GalleryFilters
-        years={years}
-        movements={movements}
-        selectedYear={selectedYear}
-        selectedMovement={selectedMovement}
-        onYearChange={(value) => updateFilter("year", value)}
-        onMovementChange={(value) =>
-          updateFilter("movement", value)
-        }
-        onReset={resetFilters}
-      />
+        <GalleryFilters
+          years={years}
+          movements={movements}
+          selectedYear={selectedYear}
+          selectedMovement={selectedMovement}
+          searchQuery={searchQuery}
+          resultCount={filteredArtworks.length}
+          onYearChange={(value) => updateFilter("year", value)}
+          onMovementChange={(value) => updateFilter("movement", value)}
+          onReset={resetFilters}
+        />
 
-      <p
-        className="mb-6 text-sm text-neutral-500"
-        aria-live="polite"
-      >
-        {filteredArtworks.length} œuvre
-        {filteredArtworks.length !== 1 ? "s" : ""} affichée
-        {filteredArtworks.length !== 1 ? "s" : ""}
-      </p>
-
-      <GalleryGrid
+        <GalleryGrid
         artworks={filteredArtworks}
+        searchQuery={searchQuery}
         onReset={resetFilters}
-      />
+        />
     </>
-  );
+    );
 }
