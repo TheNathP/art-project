@@ -49,10 +49,7 @@ function findMatches(text, query) {
   let searchFrom = 0;
 
   while (searchFrom < normalizedText.length) {
-    const matchIndex = normalizedText.indexOf(
-      normalizedQuery,
-      searchFrom,
-    );
+    const matchIndex = normalizedText.indexOf(normalizedQuery, searchFrom);
 
     if (matchIndex === -1) {
       break;
@@ -104,11 +101,7 @@ export default function HighlightedText({ text, query }) {
   }
 
   if (cursor < safeText.length) {
-    parts.push(
-      <span key={`text-${cursor}`}>
-        {safeText.slice(cursor)}
-      </span>,
-    );
+    parts.push(<span key={`text-${cursor}`}>{safeText.slice(cursor)}</span>);
   }
 
   return <>{parts}</>;

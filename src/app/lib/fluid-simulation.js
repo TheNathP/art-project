@@ -1,3 +1,5 @@
+// biome-ignore-all lint/correctness/useHookAtTopLevel: WebGLRenderingContext.useProgram is not a React hook.
+
 const VERTEX_SHADER = `
 precision highp float;
 
@@ -172,12 +174,18 @@ function hexToRgb(color) {
   }
 
   const value = color.trim().replace("#", "");
-  const hex = value.length === 3
-    ? value.split("").map((character) => character + character).join("")
-    : value;
+  const hex =
+    value.length === 3
+      ? value
+          .split("")
+          .map((character) => character + character)
+          .join("")
+      : value;
 
   if (!/^[0-9a-fA-F]{6}$/.test(hex)) {
-    throw new Error('primaryColor must be a hexadecimal color, for example "#7c3aed".');
+    throw new Error(
+      'primaryColor must be a hexadecimal color, for example "#7c3aed".',
+    );
   }
 
   return {
@@ -197,8 +205,14 @@ function interpolateColor(from, to, amount) {
 
 function normalizePrimaryColors(primaryColor, primaryColors) {
   if (primaryColors !== undefined) {
-    if (!Array.isArray(primaryColors) || primaryColors.length < 1 || primaryColors.length > 3) {
-      throw new Error("primaryColors must contain between 1 and 3 hexadecimal colors.");
+    if (
+      !Array.isArray(primaryColors) ||
+      primaryColors.length < 1 ||
+      primaryColors.length > 3
+    ) {
+      throw new Error(
+        "primaryColors must contain between 1 and 3 hexadecimal colors.",
+      );
     }
 
     const colors = primaryColors.map(hexToRgb);
@@ -261,7 +275,9 @@ export class FluidSimulation {
     this.gl = this.canvas.getContext("webgl");
     if (!this.gl) throw new Error("WebGL is not available in this browser.");
     if (!this.gl.getExtension("OES_texture_float")) {
-      throw new Error("The OES_texture_float WebGL extension is not available.");
+      throw new Error(
+        "The OES_texture_float WebGL extension is not available.",
+      );
     }
 
     this.prevTimestamp = Date.now();
@@ -338,7 +354,9 @@ export class FluidSimulation {
     window.addEventListener("resize", this.resize);
     this.eventTarget.addEventListener("click", this.handleClick);
     this.eventTarget.addEventListener("mousemove", this.handleMouseMove);
-    this.eventTarget.addEventListener("touchmove", this.handleTouchMove, { passive: false });
+    this.eventTarget.addEventListener("touchmove", this.handleTouchMove, {
+      passive: false,
+    });
   }
 
   createShader(sourceCode, type) {
@@ -357,7 +375,10 @@ export class FluidSimulation {
   }
 
   createProgram(name) {
-    const fragmentShader = this.createShader(FRAGMENT_SHADERS[name], this.gl.FRAGMENT_SHADER);
+    const fragmentShader = this.createShader(
+      FRAGMENT_SHADERS[name],
+      this.gl.FRAGMENT_SHADER,
+    );
     const program = this.gl.createProgram();
     this.gl.attachShader(program, this.vertexShader);
     this.gl.attachShader(program, fragmentShader);
@@ -414,7 +435,12 @@ export class FluidSimulation {
     this.gl.enableVertexAttribArray(0);
 
     if (target === null) {
-      this.gl.viewport(0, 0, this.gl.drawingBufferWidth, this.gl.drawingBufferHeight);
+      this.gl.viewport(
+        0,
+        0,
+        this.gl.drawingBufferWidth,
+        this.gl.drawingBufferHeight,
+      );
       this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
     } else {
       this.gl.viewport(0, 0, target.width, target.height);
@@ -431,7 +457,11 @@ export class FluidSimulation {
     this.outputColor = this.createDoubleFBO(dyeRes.width, dyeRes.height);
     this.velocity = this.createDoubleFBO(simRes.width, simRes.height);
     this.divergence = this.createFBO(simRes.width, simRes.height, this.gl.RGB);
-    this.pressure = this.createDoubleFBO(simRes.width, simRes.height, this.gl.RGB);
+    this.pressure = this.createDoubleFBO(
+      simRes.width,
+      simRes.height,
+      this.gl.RGB,
+    );
   }
 
   getResolution(resolution) {
@@ -448,10 +478,10 @@ export class FluidSimulation {
 
   getCurrentPrimaryColor() {
     const duration = 15000;
-    const elapsed = (performance.now() - this.colorCycleStartedAt) % (duration * 2);
-    const progress = elapsed <= duration
-      ? elapsed / duration
-      : 2 - elapsed / duration;
+    const elapsed =
+      (performance.now() - this.colorCycleStartedAt) % (duration * 2);
+    const progress =
+      elapsed <= duration ? elapsed / duration : 2 - elapsed / duration;
 
     const keyframes = [
       { stop: 0, color: this.primaryColors[0] },
@@ -477,11 +507,37 @@ export class FluidSimulation {
     this.gl.activeTexture(this.gl.TEXTURE0);
     const texture = this.gl.createTexture();
     this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
-    this.gl.texImage2D(this.gl.TEXTURE_2D, 0, type, width, height, 0, type, this.gl.FLOAT, null);
+    this.gl.texParameteri(
+      this.gl.TEXTURE_2D,
+      this.gl.TEXTURE_MIN_FILTER,
+      this.gl.NEAREST,
+    );
+    this.gl.texParameteri(
+      this.gl.TEXTURE_2D,
+      this.gl.TEXTURE_MAG_FILTER,
+      this.gl.NEAREST,
+    );
+    this.gl.texParameteri(
+      this.gl.TEXTURE_2D,
+      this.gl.TEXTURE_WRAP_S,
+      this.gl.CLAMP_TO_EDGE,
+    );
+    this.gl.texParameteri(
+      this.gl.TEXTURE_2D,
+      this.gl.TEXTURE_WRAP_T,
+      this.gl.CLAMP_TO_EDGE,
+    );
+    this.gl.texImage2D(
+      this.gl.TEXTURE_2D,
+      0,
+      type,
+      width,
+      height,
+      0,
+      type,
+      this.gl.FLOAT,
+      null,
+    );
 
     const fbo = this.gl.createFramebuffer();
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, fbo);
@@ -537,11 +593,14 @@ export class FluidSimulation {
 
     if (!this.pointer.firstMove) {
       this.pointer.moved = true;
-      const newX = (
-        0.5
-        + 0.2 * Math.cos(0.006 * this.prevTimestamp) * Math.sin(0.008 * this.prevTimestamp)
-      ) * this.canvas.width;
-      const newY = (0.5 + 0.12 * Math.sin(0.01 * this.prevTimestamp)) * this.canvas.height;
+      const newX =
+        (0.5 +
+          0.2 *
+            Math.cos(0.006 * this.prevTimestamp) *
+            Math.sin(0.008 * this.prevTimestamp)) *
+        this.canvas.width;
+      const newY =
+        (0.5 + 0.12 * Math.sin(0.01 * this.prevTimestamp)) * this.canvas.height;
       this.pointer.dx = 10 * (newX - this.pointer.x);
       this.pointer.dy = 10 * (newY - this.pointer.y);
       this.pointer.x = newX;
@@ -553,8 +612,14 @@ export class FluidSimulation {
       const currentPrimaryColor = this.getCurrentPrimaryColor();
 
       this.gl.useProgram(this.splatProgram.program);
-      this.gl.uniform1i(this.splatProgram.uniforms.u_input_txr, this.velocity.read().attach(0));
-      this.gl.uniform1f(this.splatProgram.uniforms.u_ratio, this.canvas.width / this.canvas.height);
+      this.gl.uniform1i(
+        this.splatProgram.uniforms.u_input_txr,
+        this.velocity.read().attach(0),
+      );
+      this.gl.uniform1f(
+        this.splatProgram.uniforms.u_ratio,
+        this.canvas.width / this.canvas.height,
+      );
       this.gl.uniform2f(
         this.splatProgram.uniforms.u_point,
         this.pointer.x / this.canvas.width,
@@ -566,12 +631,18 @@ export class FluidSimulation {
         -this.pointer.dy,
         1,
       );
-      this.gl.uniform1f(this.splatProgram.uniforms.u_point_size, this.params.SPLAT_RADIUS);
+      this.gl.uniform1f(
+        this.splatProgram.uniforms.u_point_size,
+        this.params.SPLAT_RADIUS,
+      );
       this.blit(this.velocity.write());
       this.velocity.swap();
 
       this.gl.useProgram(this.splatProgram.program);
-      this.gl.uniform1i(this.splatProgram.uniforms.u_input_txr, this.outputColor.read().attach(0));
+      this.gl.uniform1i(
+        this.splatProgram.uniforms.u_input_txr,
+        this.outputColor.read().attach(0),
+      );
       this.gl.uniform3f(
         this.splatProgram.uniforms.u_point_value,
         1 - currentPrimaryColor.r,
@@ -696,10 +767,18 @@ export class FluidSimulation {
     this.eventTarget.removeEventListener("mousemove", this.handleMouseMove);
     this.eventTarget.removeEventListener("touchmove", this.handleTouchMove);
 
-    this.programs.forEach((program) => this.gl.deleteProgram(program));
-    this.shaders.forEach((shader) => this.gl.deleteShader(shader));
-    this.textures.forEach((texture) => this.gl.deleteTexture(texture));
-    this.framebuffers.forEach((fbo) => this.gl.deleteFramebuffer(fbo));
+    this.programs.forEach((program) => {
+      this.gl.deleteProgram(program);
+    });
+    this.shaders.forEach((shader) => {
+      this.gl.deleteShader(shader);
+    });
+    this.textures.forEach((texture) => {
+      this.gl.deleteTexture(texture);
+    });
+    this.framebuffers.forEach((fbo) => {
+      this.gl.deleteFramebuffer(fbo);
+    });
     this.gl.deleteBuffer(this.vertexBuffer);
     this.gl.deleteBuffer(this.indexBuffer);
   }

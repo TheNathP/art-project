@@ -17,20 +17,33 @@ export default function LiquidBackground({
   const canvasRef = useRef(null);
   const backgroundRef = useRef(null);
 
-  const [secondary1 = "aqua", secondary2 = secondary1, secondary3 = secondary1] =
-    secondaryColors;
-  const primaryColorsKey = Array.isArray(primaryColors) ? primaryColors.join("|") : "";
+  const [
+    secondary1 = "aqua",
+    secondary2 = secondary1,
+    secondary3 = secondary1,
+  ] = secondaryColors;
+  const primaryColorsKey = Array.isArray(primaryColors)
+    ? primaryColors.join("|")
+    : "";
   const backgroundImageUrl =
-    typeof backgroundImage === "string" ? backgroundImage : backgroundImage?.src;
+    typeof backgroundImage === "string"
+      ? backgroundImage
+      : backgroundImage?.src;
 
   useEffect(() => {
-    const simulation = new FluidSimulation(canvasRef.current, backgroundRef.current, {
-      primaryColor,
-      primaryColors: primaryColorsKey ? primaryColorsKey.split("|") : undefined,
-      hoverSize,
-      autoAnimation,
-      eventTarget: rootRef.current,
-    });
+    const simulation = new FluidSimulation(
+      canvasRef.current,
+      backgroundRef.current,
+      {
+        primaryColor,
+        primaryColors: primaryColorsKey
+          ? primaryColorsKey.split("|")
+          : undefined,
+        hoverSize,
+        autoAnimation,
+        eventTarget: rootRef.current,
+      },
+    );
 
     return () => simulation.destroy();
   }, [primaryColor, primaryColorsKey, hoverSize, autoAnimation]);
@@ -59,7 +72,6 @@ export default function LiquidBackground({
 
       <canvas
         ref={canvasRef}
-        aria-hidden="true"
         className="pointer-events-none absolute inset-0 h-full w-full"
       />
 

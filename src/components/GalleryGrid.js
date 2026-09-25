@@ -134,6 +134,7 @@ export default function GalleryGrid({
             ref={gridRef}
             data-gallery-grid
             data-gallery-view={viewMode}
+            data-lenis-prevent={isGridView ? "true" : undefined}
             className={
               isGridView
                 ? "grid h-full w-full auto-rows-max grid-cols-1 gap-x-8 gap-y-14 overflow-y-auto overscroll-contain px-5 pb-40 pt-20 sm:grid-cols-2 sm:px-8 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
