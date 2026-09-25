@@ -24,3 +24,212 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/*
+ * Page transition
+ *
+ * The root snapshots always match the viewport, including on pages whose
+ * document is taller than the screen. Keeping the values as custom properties
+ * makes this transition portable and easy to retune in another project.
+ */
+@property --page-transition-x {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --page-transition-y {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --page-transition-current-scale {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+@property --page-transition-rotation {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+:root {
+  --main-highlight: #c7e7ff;
+  --page-transition-scale: 0.86;
+  --page-transition-radius: 1.25rem;
+  --page-transition-distance: 112%;
+  --page-transition-entry-x: 90%;
+  --page-transition-entry-y: 115%;
+  --page-transition-entry-scale: 0.62;
+  --page-transition-entry-rotation: 68deg;
+  --page-transition-duration: 2000ms;
+  --page-transition-ease: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+html[data-page-transition="page-forward"] {
+  overflow: hidden;
+}
+
+html[data-page-transition="page-forward"]::view-transition {
+  pointer-events: none;
+  background: var(--main-highlight);
+}
+
+html[data-page-transition="page-forward"]::view-transition-group(root) {
+  inset: 0;
+  width: 100vw;
+  height: 100svh;
+  overflow: hidden;
+  animation: none;
+}
+
+html[data-page-transition="page-forward"]::view-transition-image-pair(root) {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+html[data-page-transition="page-forward"]::view-transition-old(root),
+html[data-page-transition="page-forward"]::view-transition-new(root) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transform: translate3d(var(--page-transition-x), var(--page-transition-y), 0)
+    scale(var(--page-transition-current-scale))
+    rotate(var(--page-transition-rotation));
+  transform-origin: center bottom;
+  overflow: clip;
+  mix-blend-mode: normal;
+  backface-visibility: hidden;
+  box-shadow: 0 1.75rem 5rem rgb(30 70 100 / 20%);
+}
+
+html[data-page-transition="page-forward"]::view-transition-old(root) {
+  z-index: 1;
+  animation:
+    page-transition-exit-x var(--page-transition-duration)
+    var(--page-transition-ease) both,
+    page-transition-exit-y var(--page-transition-duration) linear both,
+    page-transition-exit-surface var(--page-transition-duration)
+    var(--page-transition-ease) both;
+}
+
+html[data-page-transition="page-forward"]::view-transition-new(root) {
+  z-index: 2;
+  transform-origin: center center;
+  animation:
+    page-transition-enter-x var(--page-transition-duration) linear both,
+    page-transition-enter-y var(--page-transition-duration) linear both,
+    page-transition-enter-surface var(--page-transition-duration)
+    cubic-bezier(0.35, 0, 0.15, 1) both;
+}
+
+@keyframes page-transition-exit-x {
+  0%,
+  28% {
+    --page-transition-x: 0%;
+  }
+
+  100% {
+    --page-transition-x: calc(-1 * var(--page-transition-distance));
+  }
+}
+
+@keyframes page-transition-exit-y {
+  0%,
+  28% {
+    --page-transition-y: 0%;
+    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  }
+
+  62% {
+    --page-transition-y: -4%;
+    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  }
+
+  100% {
+    --page-transition-y: 6%;
+  }
+}
+
+@keyframes page-transition-exit-surface {
+  0% {
+    --page-transition-current-scale: 1;
+    --page-transition-rotation: 0deg;
+    border-radius: 0;
+    opacity: 1;
+  }
+
+  28% {
+    --page-transition-current-scale: var(--page-transition-scale);
+    --page-transition-rotation: 0deg;
+    border-radius: var(--page-transition-radius) var(--page-transition-radius) 0
+      0;
+    opacity: 0.7;
+  }
+
+  100% {
+    --page-transition-current-scale: var(--page-transition-scale);
+    --page-transition-rotation: -1.75deg;
+    border-radius: var(--page-transition-radius) var(--page-transition-radius) 0
+      0;
+    opacity: 0.7;
+  }
+}
+
+@keyframes page-transition-enter-x {
+  0%,
+  18% {
+    --page-transition-x: var(--page-transition-entry-x);
+    animation-timing-function: cubic-bezier(0.65, 0, 0.25, 1);
+  }
+
+  78%,
+  100% {
+    --page-transition-x: 0%;
+  }
+}
+
+@keyframes page-transition-enter-y {
+  0%,
+  18% {
+    --page-transition-y: var(--page-transition-entry-y);
+    animation-timing-function: cubic-bezier(0.2, 0.75, 0.25, 1);
+  }
+
+  78%,
+  100% {
+    --page-transition-y: 0%;
+  }
+}
+
+@keyframes page-transition-enter-surface {
+  0%,
+  18% {
+    --page-transition-current-scale: var(--page-transition-entry-scale);
+    --page-transition-rotation: var(--page-transition-entry-rotation);
+    border-radius: var(--page-transition-radius) var(--page-transition-radius) 0
+      0;
+    opacity: 1;
+  }
+
+  78% {
+    --page-transition-current-scale: var(--page-transition-scale);
+    --page-transition-rotation: 0deg;
+    border-radius: var(--page-transition-radius) var(--page-transition-radius) 0
+      0;
+    opacity: 1;
+  }
+
+  100% {
+    --page-transition-current-scale: 1;
+    --page-transition-rotation: 0deg;
+    border-radius: 0;
+    opacity: 1;
+  }
+}
