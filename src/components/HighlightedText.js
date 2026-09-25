@@ -6,8 +6,8 @@ function normalizeValue(value) {
 }
 
 /*
- * Produit le texte normalisé et conserve la correspondance
- * entre ses caractères et les positions du texte original.
+ * Produces normalized text while preserving the mapping
+ * between its characters and positions in the original text.
  */
 function createSearchMap(text) {
   let normalizedText = "";
@@ -26,7 +26,7 @@ function createSearchMap(text) {
   }
 
   /*
-   * Position utilisée pour calculer la fin de la dernière correspondance.
+   * Position used to calculate the end of the final match.
    */
   originalPositions.push(text.length);
 
@@ -94,7 +94,7 @@ export default function HighlightedText({ text, query }) {
     parts.push(
       <mark
         key={`match-${match.start}-${match.end}`}
-        className="bg-amber-300 text-inherit"
+        className="bg-[var(--main-highlight)] text-inherit"
       >
         {safeText.slice(match.start, match.end)}
       </mark>,

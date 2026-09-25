@@ -1,3 +1,5 @@
+import { withArtworkPlaceholder } from "@/app/lib/artwork-placeholders";
+
 const API_URL = "https://api-museum.vercel.app";
 
 async function fetchMuseum(path) {
@@ -8,7 +10,7 @@ async function fetchMuseum(path) {
   });
 
   if (!response.ok) {
-    throw new Error(`Erreur API Museum : ${response.status}`);
+    throw new Error(`Museum API error: ${response.status}`);
   }
 
   return response.json();
@@ -18,11 +20,11 @@ export async function getAllArtworks() {
   const firstPage = await fetchMuseum("/objects?page=1&limit=100");
 
   if (!Array.isArray(firstPage.objects)) {
-    throw new Error("La réponse de l’API ne contient pas de liste d’œuvres.");
+    throw new Error("The API response does not contain an artwork list.");
   }
 
   if (firstPage.totalPages <= 1) {
-    return firstPage.objects;
+    return firstPage.objects.map(withArtworkPlaceholder);
   }
 
   const remainingPages = await Promise.all(
@@ -31,10 +33,9 @@ export async function getAllArtworks() {
     ),
   );
 
-  return [
-    firstPage,
-    ...remainingPages,
-  ].flatMap((page) => page.objects);
+  return [firstPage, ...remainingPages].flatMap((page) =>
+    page.objects.map(withArtworkPlaceholder),
+  );
 }
 
 export async function getArtworkBySlug(slug) {
@@ -52,8 +53,10 @@ export async function getArtworkBySlug(slug) {
   }
 
   if (!response.ok) {
-    throw new Error(`Erreur API Museum : ${response.status}`);
+    throw new Error(`Museum API error: ${response.status}`);
   }
 
-  return response.json();
+  const artwork = await response.json();
+
+  return withArtworkPlaceholder(artwork);
 }

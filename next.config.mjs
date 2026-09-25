@@ -3,6 +3,8 @@ const nextConfig = {
   reactCompiler: true,
 
   images: {
+    loader: "custom",
+    loaderFile: "./src/app/lib/wikimedia.js",
     remotePatterns: [
       {
         protocol: "https",

@@ -2,8 +2,11 @@ import Menu from "./Menu";
 
 export default function Header() {
   return (
-    <header className="pointer-events-none fixed left-0 top-20 z-[100] flex w-full items-center justify-center px-4">
-      <div className="pointer-events-auto">
+    <header
+      data-gallery-floating-ui
+      className="pointer-events-none fixed right-[clamp(2.75rem,4.5vw,5rem)] top-[clamp(3.75rem,8svh,6rem)] z-1500 flex w-fit justify-end"
+    >
+      <div className="pointer-events-auto w-fit">
         <Menu />
       </div>
     </header>

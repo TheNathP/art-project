@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import GalleryCollection from "@/components/GalleryCollection";
 import { getAllArtworks } from "@/app/lib/museum-api";
+import GalleryCollection from "@/components/GalleryCollection";
 
 export const metadata = {
-  title: "Galerie | Art Gallery",
-  description: "Découvrez toutes les œuvres de notre musée en ligne.",
+  title: "Gallery | Art Gallery",
+  description: "Discover every artwork in our online museum.",
 };
 
 export default async function GalleryPage() {
@@ -16,9 +16,7 @@ export default async function GalleryPage() {
         <Suspense
           fallback={
             <div className="grid h-full place-items-center">
-              <p className="text-sm text-neutral-500">
-                Chargement de la galerie…
-              </p>
+              <p className="text-sm text-neutral-500">Loading the gallery…</p>
             </div>
           }
         >

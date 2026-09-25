@@ -177,7 +177,7 @@ function hexToRgb(color) {
     : value;
 
   if (!/^[0-9a-fA-F]{6}$/.test(hex)) {
-    throw new Error('primaryColor doit être une couleur hexadécimale, par exemple "#7c3aed".');
+    throw new Error('primaryColor must be a hexadecimal color, for example "#7c3aed".');
   }
 
   return {
@@ -198,7 +198,7 @@ function interpolateColor(from, to, amount) {
 function normalizePrimaryColors(primaryColor, primaryColors) {
   if (primaryColors !== undefined) {
     if (!Array.isArray(primaryColors) || primaryColors.length < 1 || primaryColors.length > 3) {
-      throw new Error("primaryColors doit contenir entre 1 et 3 couleurs hexadécimales.");
+      throw new Error("primaryColors must contain between 1 and 3 hexadecimal colors.");
     }
 
     const colors = primaryColors.map(hexToRgb);
@@ -237,7 +237,7 @@ export class FluidSimulation {
     this.colorCycleStartedAt = performance.now();
 
     if (!Number.isFinite(this.hoverSize) || this.hoverSize <= 0) {
-      throw new Error("hoverSize doit être un nombre strictement supérieur à 0.");
+      throw new Error("hoverSize must be a number greater than 0.");
     }
 
     this.params = {
@@ -259,9 +259,9 @@ export class FluidSimulation {
     };
 
     this.gl = this.canvas.getContext("webgl");
-    if (!this.gl) throw new Error("WebGL n’est pas disponible dans ce navigateur.");
+    if (!this.gl) throw new Error("WebGL is not available in this browser.");
     if (!this.gl.getExtension("OES_texture_float")) {
-      throw new Error("L’extension WebGL OES_texture_float n’est pas disponible.");
+      throw new Error("The OES_texture_float WebGL extension is not available.");
     }
 
     this.prevTimestamp = Date.now();
@@ -349,7 +349,7 @@ export class FluidSimulation {
     if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
       const message = this.gl.getShaderInfoLog(shader);
       this.gl.deleteShader(shader);
-      throw new Error(`Erreur de compilation du shader : ${message}`);
+      throw new Error(`Shader compilation error: ${message}`);
     }
 
     this.shaders.push(shader);
@@ -367,7 +367,7 @@ export class FluidSimulation {
     if (!this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
       const message = this.gl.getProgramInfoLog(program);
       this.gl.deleteProgram(program);
-      throw new Error(`Erreur d’initialisation du programme WebGL : ${message}`);
+      throw new Error(`WebGL program initialization error: ${message}`);
     }
 
     this.programs.push(program);
