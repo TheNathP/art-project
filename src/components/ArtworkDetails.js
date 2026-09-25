@@ -81,6 +81,7 @@ export default function ArtworkDetails({
 
         <div
           data-details-scroll
+          data-lenis-prevent
           className="relative z-10 h-full overflow-y-auto overscroll-contain"
         >
           <div

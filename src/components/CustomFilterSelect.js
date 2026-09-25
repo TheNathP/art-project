@@ -137,6 +137,7 @@ export default function CustomFilterSelect({
       <div
         id={listboxId}
         role="listbox"
+        data-lenis-prevent
         aria-labelledby={id}
         aria-hidden={!open}
         inert={!open}

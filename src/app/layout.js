@@ -1,7 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import "lenis/dist/lenis.css";
 import "./globals.css";
 import { PRELOADER_ARTWORKS } from "@/app/lib/preloader-artworks";
 import { getSiteUrl } from "@/app/lib/site-url";
+import SmoothScroll from "@/components/SmoothScroll";
 import { ArtworkPageTransitionProvider } from "@/components/transitions/ArtworkPageTransitionProvider";
 import { PageTransitionProvider } from "@/components/transitions/PageTransitionProvider";
 import Header from "../components/Header";
@@ -31,13 +33,15 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <PageTransitionProvider>
-          <ArtworkPageTransitionProvider>
-            <SitePreloader artworks={PRELOADER_ARTWORKS} />
-            <Header />
-            {children}
-          </ArtworkPageTransitionProvider>
-        </PageTransitionProvider>
+        <SmoothScroll>
+          <PageTransitionProvider>
+            <ArtworkPageTransitionProvider>
+              <SitePreloader artworks={PRELOADER_ARTWORKS} />
+              <Header />
+              {children}
+            </ArtworkPageTransitionProvider>
+          </PageTransitionProvider>
+        </SmoothScroll>
       </body>
     </html>
   );

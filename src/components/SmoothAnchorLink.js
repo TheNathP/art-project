@@ -1,6 +1,10 @@
 "use client";
 
+import { useLenis } from "lenis/react";
+
 export default function SmoothAnchorLink({ href, onClick, ...props }) {
+  const lenis = useLenis();
+
   function handleClick(event) {
     onClick?.(event);
 
@@ -24,14 +28,12 @@ export default function SmoothAnchorLink({ href, onClick, ...props }) {
 
     event.preventDefault();
 
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+    if (lenis) {
+      lenis.scrollTo(target);
+    } else {
+      target.scrollIntoView({ block: "start" });
+    }
 
-    target.scrollIntoView({
-      behavior: reducedMotion ? "auto" : "smooth",
-      block: "start",
-    });
     window.history.pushState(null, "", href);
   }
 
